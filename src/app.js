@@ -1,0 +1,58 @@
+/*
+ * @Author: Administrator
+ * @Date:   2016-12-24 16:27:08
+ * @Last Modified by:   Administrator
+ * @Last Modified time: 2016-12-26 17:42:10
+ */
+
+import express from 'express'
+
+import config from './config'
+
+import nunjucks from 'nunjucks'
+
+import {join}  from 'path'
+
+import insexRouter from './routes/index'
+
+import accountRouter from './routes/account'
+
+const app = express()
+
+//配置静态资源
+
+app.use('/static', express.static(join(__dirname, '../static')))
+
+
+app.use('/node_modules', express.static(join(__dirname, '../node_modules')))
+
+
+
+//watch 表示监视文件的改动
+nunjucks.configure(config.viewPath,{
+	autoescape:true,
+	express:app,
+	watch:true,
+    noCache:false
+})
+
+app.use(insexRouter)
+app.use('/account',accountRouter)
+
+// app.get('/',(req,res)=>{
+// 	res.render('index.html')
+// })
+
+// app.get('/account/register', (req, res) => {
+//   res.render('register.html')
+// })
+
+
+// app.get('/account/login', (req, res) => {
+//   res.render('login.html')
+// })
+
+app.listen(config.port,config.host,() => {
+	console.log(`Server is running at port ${config.port}/`)
+	console.log(`Please visit http://${config.host}:${config.port}/`)
+})
